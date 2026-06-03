@@ -60,18 +60,6 @@ export function FingerprintScanner() {
     }
   }, [state])
 
-  // Reset after unlocked
-  useEffect(() => {
-    if (state === "unlocked") {
-      const timeout = setTimeout(() => {
-        setState("idle")
-        setScanProgress(0)
-        setShowStatusInfo(true)
-      }, 5000)
-      return () => clearTimeout(timeout)
-    }
-  }, [state])
-
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString("bg-BG", {
       hour: "2-digit",
