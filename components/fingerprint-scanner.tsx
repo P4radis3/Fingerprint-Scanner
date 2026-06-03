@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, type MouseEvent, type TouchEvent } from "react"
 import { Lock, Unlock, Fingerprint, Shield, CheckCircle } from "lucide-react"
 import type { ScanState } from "@/types/fingerprint"
 
@@ -18,19 +18,27 @@ export function FingerprintScanner() {
     return () => clearInterval(interval)
   }, [])
 
-  const handleScanStart = useCallback(() => {
-    if (state === "idle") {
-      setState("scanning")
-      setScanProgress(0)
-    }
-  }, [state])
+  const handleScanStart = useCallback(
+    (event?: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>) => {
+      if (event && "button" in event && event.button !== 0) return
+      if (state === "idle") {
+        setState("scanning")
+        setScanProgress(0)
+      }
+    },
+    [state]
+  )
 
-  const handleScanEnd = useCallback(() => {
-    if (state === "scanning") {
-      setState("idle")
-      setScanProgress(0)
-    }
-  }, [state])
+  const handleScanEnd = useCallback(
+    (event?: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>) => {
+      if (event && "button" in event && event.button !== 0) return
+      if (state === "scanning") {
+        setState("idle")
+        setScanProgress(0)
+      }
+    },
+    [state]
+  )
 
   // Scanning progress simulation
   useEffect(() => {
@@ -220,6 +228,8 @@ export function FingerprintScanner() {
           onMouseLeave={handleScanEnd}
           onTouchStart={handleScanStart}
           onTouchEnd={handleScanEnd}
+          onContextMenu={(event) => event.preventDefault()}
+          onAuxClick={(event) => event.preventDefault()}
         >
           {/* Scanner outer frame */}
           <div
